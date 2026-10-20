@@ -88,3 +88,143 @@
         .card p {
             font-size: 0.9rem;
             color: #64748b;
+            margin-bottom: 1.5rem;
+        }
+        .card-btn {
+            display: inline-block;
+            background-color: #f1f5f9;
+            color: #1e293b;
+            text-align: center;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .card-btn:hover {
+            background-color: #3b82f6;
+            color: white;
+        }
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            border-top: 1px solid #e2e8f0;
+            background: white;
+        }
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.8rem; }
+            .container { margin-top: -1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>سامانه جامع داشبوردهای تخصصی رایان</h1>
+        <p>مجموعه‌ای از ابزارهای محاسباتی، پایش و حل مسئله تعاملی برای صنعت، خودرو، سلامت و مدیریت</p>
+    </header>
+
+    <div class="container">
+
+        <!-- بخش صنعت و انرژی -->
+        <div class="category-section">
+            <h2 class="category-title">⚙️ صنعت و انرژی</h2>
+            <div class="grid">
+                <div class="card">
+                    <div>
+                        <div class="card-icon">🔄</div>
+                        <h3>بهینه‌ساز چیدمان ایمپلر</h3>
+                        <p>محاسبه و بهینه‌سازی بالانس ضد تیغ‌ها و روبندها بر اساس استاندارد و شعاع نصب.</p>
+                    </div>
+                    <a href="impeller_optimizer.html" class="card-btn">ورود به داشبورد</a>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-icon">⚡</div>
+                        <h3>پایش مصرف انرژی و بار</h3>
+                        <p>محاسبه خطوط پایه مصرف برق، گاز و راندمان تجهیزات کارگاهی.</p>
+                    </div>
+                    <a href="#" class="card-btn">به زودی...</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- بخش خودرو -->
+        <div class="category-section">
+            <h2 class="category-title">🚗 خودرو و نگهداری</h2>
+            <div class="grid">
+                <div class="card">
+                    <div>
+                        <div class="card-icon">🛠️</div>
+                        <h3>عیب‌یاب هوشمند چراغ چک</h3>
+                        <p>بررسی کدهای خطا، علائم بالینی موتور و راهنمای گام‌به‌گام رفع عیب.</p>
+                    </div>
+                    <a href="#" class="card-btn">ورود به داشبورد</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- بخش پزشکی و سلامت -->
+        <div class="category-section">
+            <h2 class="category-title">🩺 پزشکی و سلامت (سنتی/مدرن)</h2>
+            <div class="grid">
+                <div class="card">
+                    <div>
+                        <div class="card-icon">🌿</div>
+                        <h3>پایشگر و راهکار ریزش مو</h3>
+                        <p>ارزیابی الگوهای ریزش، بررسی عوامل تغذیه‌ای، هورمونی و راهکارهای درمانی.</p>
+                    </div>
+                    <a href="#" class="card-btn">ورود به داشبورد</a>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-icon">🍵</div>
+                        <h3>تسکین و عیب‌یابی معده‌درد</h3>
+                        <p>تشخیص افتراقی علائم گوارشی و توصیه‌های فوری طب سنتی و مدرن.</p>
+                    </div>
+                    <a href="#" class="card-btn">ورود به داشبورد</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- بخش لوازم خانگی -->
+        <div class="category-section">
+            <h2 class="category-title">🏠 تعمیرات لوازم خانگی</h2>
+            <div class="grid">
+                <div class="card">
+                    <div>
+                        <div class="card-icon">🔥</div>
+                        <h3>عیب‌یاب و سرویس آبگرمکن</h3>
+                        <p>راهنمای عیب‌یابی شمعک، فشار آب، مشکلات احتراق و رسوب‌زدایی.</p>
+                    </div>
+                    <a href="#" class="card-btn">ورود به داشبورد</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- بخش مدیریت و منابع انسانی -->
+        <div class="category-section">
+            <h2 class="category-title">👥 مدیریت و منابع انسانی</h2>
+            <div class="grid">
+                <div class="card">
+                    <div>
+                        <div class="card-icon">🤝</div>
+                        <h3>مدیریت تعارض و حل اختلاف</h3>
+                        <p>ابزار گام‌به‌گام میانجی‌گری، تحلیل رفتار سازمانی و حل کشمکش‌های کاری.</p>
+                    </div>
+                    <a href="#" class="card-btn">ورود به داشبورد</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>تمامی حقوق محفوظ است | پلتفرم رایان (Rayan Hub) مجهز به ابزارهای محاسباتی هوشمند</p>
+    </footer>
+
+</body>
+</html>
