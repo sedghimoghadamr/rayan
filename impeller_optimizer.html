@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>بهینه‌ساز چیدمان ایمپلر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#12263A;--paper:#E8EDF1;--card:#F9FBFC;--line:#C3CFD8;--steel:#23597F;--brass:#B07D1F;--muted:#5B6E7E;--light:#4F86AB}
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Vazirmatn','Vazir','Segoe UI',Tahoma,sans-serif;line-height:1.7;font-variant-numeric:tabular-nums}
+  .num{direction:ltr;unicode-bidi:isolate;display:inline-block}
+  .wrap{max-width:1120px;margin:0 auto;padding:20px 16px 48px}
+  h1{margin:0;font-size:clamp(26px,5vw,40px);font-weight:800;line-height:1.25}
+  header p{margin:6px 0 0;color:var(--muted);font-size:15px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:18px}
+  .panel h2{margin:0 0 4px;font-size:17px;font-weight:600}
+  .sub{margin:0 0 10px;color:var(--muted);font-size:13px}
+  button:focus-visible,[tabindex]:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+
+  /* inputs */
+  .grid2{display:grid;gap:12px}
+  @media(min-width:760px){.grid2{grid-template-columns:1fr 1fr}}
+  label{display:block;font-size:13.5px;color:var(--muted);margin-bottom:4px}
+  textarea,input[type=number],select{width:100%;font:inherit;font-size:15px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+  textarea{height:190px;resize:vertical;direction:ltr;text-align:left;line-height:1.5}
+  .cnt{font-size:12.5px;color:var(--muted);margin-top:3px}
+  .row3{display:grid;gap:12px;margin-top:12px}
+  @media(min-width:760px){.row3{grid-template-columns:repeat(3,1fr)}}
+  .limits{margin-top:14px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff}
+  .limits h3{margin:0 0 2px;font-size:15px;font-weight:600}
+  .row4{display:grid;gap:12px;margin-top:6px}
+  @media(min-width:760px){.row4{grid-template-columns:repeat(4,1fr)}}
+  .chk{display:flex;gap:8px;align-items:flex-start;color:var(--ink);font-size:14px;margin:10px 0 0}
+  .chk input{width:auto;margin-top:6px}
+  #banner{margin-top:14px;border-radius:10px;padding:10px 14px;font-size:14.5px;display:none}
+  #banner.ok{display:block;background:#E3F3E9;border:1px solid #9FD2B3;color:#145A33}
+  #banner.warn{display:block;background:#FBE9E7;border:1px solid #E7B1AA;color:#8C1F14}
+  #banner.info{display:block;background:#E7F0F7;border:1px solid #AFC9DC;color:#1B4766}
+  details{margin-top:12px;border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:#fff}
+  summary{cursor:pointer;font-size:14px;color:var(--steel);font-weight:600}
+  .go{margin-top:14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .btn{font:inherit;font-size:16px;font-weight:600;border:0;border-radius:10px;padding:11px 22px;cursor:pointer;background:var(--ink);color:#fff}
+  .btn.alt{background:#fff;color:var(--ink);border:1px solid var(--line);font-size:14px;padding:9px 14px}
+  .btn[disabled]{opacity:.55;cursor:wait}
+  #status{font-size:14px;color:var(--muted)}
+  #status.err{color:#B3261E;font-weight:600}
+  .prog{height:6px;background:#E3EAEF;border-radius:3px;overflow:hidden;margin-top:10px;display:none}
+  .prog i{display:block;height:100%;width:0;background:var(--brass);transition:width .1s}
+
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;background:var(--card);padding:3px;margin-top:18px}
+  .seg button{font:inherit;font-size:13.5px;border:0;background:transparent;color:var(--muted);padding:7px 14px;border-radius:7px;cursor:pointer}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+
+  /* wheel */
+  .wheelscroll{overflow-x:auto;direction:ltr;-webkit-overflow-scrolling:touch}
+  #wheel{width:100%;height:auto;display:block;max-width:900px;margin:0 auto;direction:ltr}
+  .node{cursor:pointer}
+  .node rect.body{stroke:var(--card);stroke-width:3}
+  .node.sel rect.body{stroke:var(--brass);stroke-width:6}
+  .node.opp rect.body{stroke:var(--brass);stroke-width:4;stroke-dasharray:8 6}
+  .diam{stroke:var(--line);stroke-width:1.5}.diam.sel{stroke:var(--brass);stroke-width:4}
+  .poslbl{font-size:20px;fill:var(--muted);font-weight:600}.poslbl.sel{fill:#fff;font-weight:800}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--muted);margin-top:8px;align-items:center}
+  .ramp{width:90px;height:10px;border-radius:5px;background:linear-gradient(90deg,#D6E4EE,#23597F);display:inline-block;vertical-align:middle}
+
+  .hero2{display:grid;gap:18px;margin-top:18px}
+  @media(min-width:860px){.hero2{grid-template-columns:1fr 1fr;align-items:start}}
+  .hero2 .panel{margin-top:0}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .stat{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff}
+  .stat>b{display:block;font-size:22px;font-weight:800;line-height:1.3}
+  .stat>span{display:block;font-size:12.5px;color:var(--muted)}
+  .stat.key{grid-column:1/-1;background:var(--ink);color:#fff;border-color:var(--ink)}
+  .stat.key>span{color:#B9C8D4}.stat.key>b{font-size:34px}
+  .stat.ok b{color:#1E7B46}.stat.bad b{color:#B3261E}
+  .unit{font-size:14px;font-weight:400;margin-inline-start:4px}
+  #vec{width:100%;max-width:300px;height:auto;display:block;margin:4px auto 0}
+  .vrow{display:flex;justify-content:space-between;gap:8px;font-size:14px;padding:6px 0;border-top:1px solid var(--line)}
+  .vrow:first-of-type{border-top:0}.vrow .k{color:var(--muted)}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+  .side{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff}
+  .side h3{margin:0 0 6px;font-size:14px;font-weight:600}
+  .side .ln{display:flex;justify-content:space-between;gap:6px;font-size:13.5px}.side .ln b{white-space:nowrap}
+  .side .ln.t{border-top:1px solid var(--line);margin-top:4px;padding-top:4px;font-weight:600}
+  .diffbox{margin-top:10px;font-size:14px;color:var(--muted)}.diffbox b{color:var(--ink)}
+  .tablewrap{overflow-x:auto;margin-top:6px;border:1px solid var(--line);border-radius:10px;background:#fff}
+  table{border-collapse:collapse;width:100%;font-size:13.5px}
+  th{background:var(--ink);color:#fff;font-weight:600;padding:9px 4px;text-align:center;font-size:13px}
+  td{padding:7px 4px;text-align:center;border-top:1px solid #E3EAEF;vertical-align:middle}
+  tr.row{cursor:pointer}tr.row.sel td{background:#F4E9CF}tr.row.opp td{background:#FAF3E2}tr.row.gap td{border-top:2px solid var(--line)}
+  td small{display:block;color:var(--muted);font-size:12px;line-height:1.3}
+  td .big{font-weight:800;font-size:15px;display:block}
+  .bar{position:relative;height:8px;background:#EEF2F5;border-radius:4px;margin-top:3px;min-width:56px}
+  .bar i{position:absolute;top:0;height:8px;border-radius:4px}
+  .bar::after{content:"";position:absolute;top:-2px;bottom:-2px;left:50%;width:1px;background:var(--muted)}
+  .pos{color:var(--brass)}.neg{color:var(--light)}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  footer{margin-top:18px;color:var(--muted);font-size:13px}
+  .savebar{display:flex;gap:10px;flex-wrap:wrap}
+  .savebar input{flex:1;min-width:180px;font:inherit;font-size:15px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:#fff;color:var(--ink)}
+  .item{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:1px solid var(--line);border-radius:10px;background:#fff;padding:8px 12px;margin-top:8px}
+  .item .nm{font-weight:600;flex:1;min-width:140px}.item .meta{font-size:12.5px;color:var(--muted)}
+  .item button{font:inherit;font-size:13px;border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 12px;cursor:pointer}
+  .item button.del{color:#B3261E}
+  .filebtn{display:inline-block;cursor:pointer;text-align:center}
+  @media print{
+    body{background:#fff}
+    #inputPanel,#savePanel,.go,.seg,.actions,#scrollHint,footer{display:none!important}
+    .panel{break-inside:avoid}
+    .wheelscroll{overflow:visible}#wheel{min-width:0!important;max-width:100%}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+  #results{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>بهینه‌ساز چیدمان ایمپلر</h1>
+    <p>وزن ضد تیغ‌ها، روبندها و قطر را وارد کنید و دکمه بهینه‌سازی را بزنید. جدول چیدمان، نمودار و برآیند خودکار ساخته می‌شود.</p>
+  </header>
+
+  <section class="panel" id="inputPanel">
+    <h2>ورودی‌ها</h2>
+    <p class="sub">وزن‌ها به کیلوگرم. هر عدد در یک خط (یا با فاصله جدا شود). تعداد ضد تیغ‌ها و روبندها باید برابر و زوج باشد. شماره هر قطعه همان ترتیب لیست است.</p>
+    <div class="grid2">
+      <div><label for="taA">وزن ضد تیغ‌ها (kg)</label><textarea id="taA" spellcheck="false"></textarea><div class="cnt" id="cA"></div></div>
+      <div><label for="taB">وزن روبندها (kg)</label><textarea id="taB" spellcheck="false"></textarea><div class="cnt" id="cB"></div></div>
+    </div>
+    <div class="row3">
+      <div><label for="dia">قطر ایمپلر / شعاع نصب (mm)</label><input id="dia" type="number" inputmode="decimal" value="1000" min="1"></div>
+      <div><label for="prio">اولویت بهینه‌سازی</label>
+        <select id="prio">
+          <option value="3" selected>متعادل (پیشنهادی)</option>
+          <option value="0">فقط کمترین برآیند</option>
+          <option value="10">اختلاف جفت‌های روبه‌رو اولویت دارد</option>
+        </select></div>
+      <div><label for="effort">دقت جست‌وجو</label>
+        <select id="effort"><option value="1">سریع</option><option value="2" selected>معمولی</option><option value="4">دقیق (کندتر)</option></select></div>
+    </div>
+    <div class="limits">
+      <h3>حدهای قابل‌قبول (آستانه، اختیاری)</h3>
+      <p class="sub">هر کدام را که خالی بگذارید بدون محدودیت است. اگر چیدمان فعلی شما (ضد تیغ و روبند شماره i در جایگاه i) همه حدهای واردشده را داشته باشد، تغییری داده نمی‌شود. در غیر این صورت، بهینه‌سازی تلاش می‌کند همه حدها را برقرار کند.</p>
+      <div class="row4">
+        <div><label for="limRt">حداکثر نابالانسی مجموع (g)</label><input id="limRt" type="number" inputmode="decimal" placeholder="مثلاً 2"></div>
+        <div><label for="limMd">حداکثر اختلاف دو جایگاه روبه‌رو (g)</label><input id="limMd" type="number" inputmode="decimal" placeholder="مثلاً 10"></div>
+        <div><label for="limRa">حداکثر نابالانسی ضد تیغ‌ها به‌تنهایی (g)</label><input id="limRa" type="number" inputmode="decimal" placeholder="مثلاً 5"></div>
+        <div><label for="limRb">حداکثر نابالانسی روبندها به‌تنهایی (g)</label><input id="limRb" type="number" inputmode="decimal" placeholder="مثلاً 5"></div>
+      </div>
+      <label class="chk"><input type="checkbox" id="keepIf" checked> اگر چیدمان فعلی همه حدها را دارد، تغییرش نده</label>
+      <label class="chk"><input type="checkbox" id="sep" checked> نابالانسی ضد تیغ‌ها و روبندها را جدا هم کم کن (برای بالانس دینامیکی)</label>
+    </div>
+    <details>
+      <summary>کوپل و عرض ایمپلر (اختیاری)</summary>
+      <div class="row3">
+        <div><label for="dz">فاصله محوری مرکز ضد تیغ تا روبند (mm)</label><input id="dz" type="number" inputmode="decimal" placeholder="مثلاً 250"></div>
+        <div><label for="wid">عرض ایمپلر (mm)</label><input id="wid" type="number" inputmode="decimal" placeholder="مثلاً 550"></div>
+      </div>
+    </details>
+    <details>
+      <summary>مقایسه با استاندارد بالانس (اختیاری)</summary>
+      <div class="row3">
+        <div><label for="mass">جرم روتور (kg)</label><input id="mass" type="number" inputmode="decimal" placeholder="مثلاً 800"></div>
+        <div><label for="rpm">دور کار (rpm)</label><input id="rpm" type="number" inputmode="decimal" placeholder="مثلاً 1500"></div>
+        <div><label for="grade">کلاس بالانس ISO 1940</label><select id="grade"><option>2.5</option><option selected>6.3</option><option>16</option><option>40</option></select></div>
+      </div>
+    </details>
+    <div class="go">
+      <button class="btn" id="run">بهینه‌سازی</button>
+      <span id="status"></span>
+    </div>
+    <div class="prog" id="prog"><i></i></div>
+  </section>
+
+  <section class="panel" id="savePanel">
+    <h2>ذخیره و بازیابی</h2>
+    <p class="sub">آخرین ورودی‌ها و نتیجه شما خودکار در همین مرورگر نگه داشته می‌شود. برای نگهداری چند نتیجه، نام بدهید و ذخیره کنید. برای انتقال به جای دیگر، فایل JSON بگیرید.</p>
+    <div class="savebar"><input id="saveName" type="text" placeholder="نام (مثلاً ایمپلر شماره ۳)"><button class="btn alt" id="saveBtn">ذخیره نتیجه</button></div>
+    <div id="savedList"></div>
+    <div class="actions">
+      <button class="btn alt" id="expJson">ذخیره در فایل (JSON)</button>
+      <label class="btn alt filebtn">بارگذاری از فایل<input type="file" id="impJson" accept=".json,application/json" hidden></label>
+      <button class="btn alt" id="printBtn">چاپ / ذخیره PDF</button>
+    </div>
+    <p class="sub" id="saveMsg" style="margin-top:8px"></p>
+  </section>
+
+  <div id="results">
+    <div id="banner"></div>
+    <div class="seg" role="group" aria-label="نوع چیدمان">
+      <button id="bOpt" aria-pressed="true">چیدمان نهایی</button>
+      <button id="bRaw" aria-pressed="false">قبل از بهینه‌سازی</button>
+    </div>
+
+    <section class="panel">
+      <h2>جایگاه‌ها روی ایمپلر</h2>
+      <p class="sub">روی هر جایگاه بزنید تا جفت روبه‌رو مشخص شود. جایگاه ۱ بالاست و شماره‌ها ساعتگرد می‌روند. وزن‌ها به کیلوگرم است.</p>
+      <div class="wheelscroll" id="wscroll"><svg id="wheel" role="img" aria-label="نمای ایمپلر"></svg></div>
+      <div class="legend">
+        <span>سطر اول: شماره و وزن ضد تیغ</span><span>سطر دوم: شماره و وزن روبند</span><span>سطر سوم: وزن مجموع</span>
+        <span>رنگ: سبک <span class="ramp"></span> سنگین</span>
+      </div>
+      <p class="sub" id="scrollHint" style="margin:8px 0 0">در گوشی برای دیدن همه جایگاه‌ها صفحه ایمپلر را به چپ و راست بکشید.</p>
+    </section>
+
+    <section class="hero2">
+      <div class="panel">
+        <h2>نتیجه بالانس</h2>
+        <div class="stats" id="stats"></div>
+      </div>
+      <div class="panel">
+        <h2>برآیند برداری</h2>
+        <p class="sub">جمع برداری وزن همه جایگاه‌ها</p>
+        <svg id="vec" viewBox="0 0 300 300" role="img" aria-label="نمودار قطبی برآیند"></svg>
+        <div id="vecRows"></div>
+      </div>
+    </section>
+
+    <section class="panel"><h2>جایگاه انتخاب‌شده</h2><div id="detail"></div></section>
+
+    <section class="panel">
+      <h2>جدول چیدمان بهینه</h2>
+      <p class="sub">اختلاف یعنی وزن این جایگاه منهای جایگاه روبه‌رو. میله قهوه‌ای یعنی سنگین‌تر و آبی یعنی سبک‌تر.</p>
+      <div class="tablewrap"><table id="tbl"></table></div>
+      <div class="actions">
+        <button class="btn alt" id="copy">کپی جدول (برای چسباندن در اکسل)</button>
+        <button class="btn alt" id="csv">دانلود CSV</button>
+      </div>
+      <p class="sub" id="copyMsg" style="margin-top:8px"></p>
+    </section>
+  </div>
+
+  <footer>برآیند صفر یعنی بالانس ایستا. بالانس نهایی با ویبرومتر یا روی دستگاه بعد از نصب همچنان لازم است. این ابزار فقط وزن قطعات را در نظر می‌گیرد.</footer>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const NS = "http://www.w3.org/2000/svg";
+const el = (tag,attrs={},parent) => { const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(parent) parent.appendChild(e); return e; };
+const fmt = (x,d=3) => x.toFixed(d);
+const sgn = x => { const v=Math.round(x); return (v>0?"+":v<0?"−":"") + Math.abs(v); };
+
+$("taA").value = "6.718\n6.695\n6.835\n6.725\n6.670\n6.805\n6.824\n6.840\n6.740\n6.805\n6.690\n6.705\n6.850\n6.710\n6.688\n6.832\n6.680\n6.820\n6.765\n6.775";
+$("taB").value = "4.465\n4.500\n4.485\n4.490\n4.468\n4.470\n4.478\n4.494\n4.480\n4.478\n4.474\n4.490\n4.500\n4.504\n4.465\n4.492\n4.470\n4.475\n4.475\n4.478";
+
+function parseList(txt){
+  const fa="۰۱۲۳۴۵۶۷۸۹", ar="٠١٢٣٤٥٦٧٨٩";
+  txt = txt.replace(/[۰-۹]/g,c=>fa.indexOf(c)).replace(/[٠-٩]/g,c=>ar.indexOf(c)).replace(/[٫,]/g,".");
+  return txt.split(/[\s;،؛]+/).filter(Boolean).map(Number);
+}
+function updCounts(){
+  const a=parseList($("taA").value), b=parseList($("taB").value);
+  $("cA").textContent = a.length+" مقدار"; $("cB").textContent = b.length+" مقدار";
+}
+$("taA").addEventListener("input",updCounts); $("taB").addEventListener("input",updCounts); updCounts();
+
+/* ---------- model ---------- */
+let N=20, A=[], B=[], COS=[], SIN=[], RADIUS=500, LIM={rt:null,ra:null,rb:null,md:null}, GEO={d:null,L:null};
+function setGeometry(n){
+  N=n; COS=[];SIN=[];
+  for(let p=0;p<N;p++){ const th=p*2*Math.PI/N; COS.push(Math.cos(th)); SIN.push(Math.sin(th)); }
+}
+function build(blades, rubs){
+  const rows=[]; let Xa=0,Ya=0,Xb=0,Yb=0;
+  for(let q=0;q<N;q++){
+    const wb=A[blades[q]], wr=B[rubs[q]], t=wb+wr;
+    rows.push({q:q+1, blade:blades[q]+1, rub:rubs[q]+1, wb, wr, total:t});
+    Xa+=wb*COS[q]; Ya+=wb*SIN[q]; Xb+=wr*COS[q]; Yb+=wr*SIN[q];
+  }
+  const h=N/2, X=Xa+Xb, Y=Ya+Yb;
+  rows.forEach((r,i)=>{ const o=(i+h)%N; r.opp=o+1; r.diff=(r.total-rows[o].total)*1000; });
+  let phi=Math.atan2(Y,X)*180/Math.PI; if(phi<0) phi+=360;
+  return {rows, X:X*1000, Y:Y*1000, res:Math.hypot(X,Y)*1000, resA:Math.hypot(Xa,Ya)*1000, resB:Math.hypot(Xb,Yb)*1000, phi,
+    maxD:Math.max(...rows.map(r=>Math.abs(r.diff))),
+    min:Math.min(...rows.map(r=>r.total)), max:Math.max(...rows.map(r=>r.total))};
+}
+const LIMITS=[
+  {k:"rt", v:d=>d.res,  label:"نابالانسی مجموع"},
+  {k:"md", v:d=>d.maxD, label:"اختلاف دو جایگاه روبه‌رو"},
+  {k:"ra", v:d=>d.resA, label:"نابالانسی ضد تیغ‌ها"},
+  {k:"rb", v:d=>d.resB, label:"نابالانسی روبندها"}];
+function checkLimits(d){
+  return LIMITS.filter(L=>LIM[L.k]).map(L=>({k:L.k,label:L.label,val:L.v(d),lim:LIM[L.k],ok:L.v(d)<=LIM[L.k]+1e-9}));
+}
+
+/* ---------- optimizer (simulated annealing) ---------- */
+function makeSolver(cfg){
+  const h=N/2;
+  const pb=new Int32Array(N), pr=new Int32Array(N), wa=new Float64Array(N), wb=new Float64Array(N);
+  let Xa=0,Ya=0,Xb=0,Yb=0, mv=null;
+  const costOf=(xa,ya,xb,yb)=>{
+    let md=0; for(let i=0;i<h;i++){ const d=Math.abs(wa[i]+wb[i]-wa[i+h]-wb[i+h]); if(d>md) md=d; }
+    const mdg=md*1000, rt=Math.hypot(xa+xb,ya+yb)*1000, ra=Math.hypot(xa,ya)*1000, rb=Math.hypot(xb,yb)*1000, L=cfg.lim;
+    if(cfg.norm){
+      let c=0; const t=(v,l)=>l?(v/l+30*Math.max(0,v/l-1)):0.01*v;
+      c+=t(rt,L.rt)+t(mdg,L.md)+t(ra,L.ra)+t(rb,L.rb);
+      return c;
+    }
+    let c=rt+cfg.lam*Math.max(0,mdg-cfg.target);
+    if(cfg.mu) c+=cfg.mu*(ra+rb);
+    if(L.rt) c+=30*Math.max(0,rt/L.rt-1);
+    if(L.md) c+=30*Math.max(0,mdg/L.md-1);
+    if(L.ra) c+=30*Math.max(0,ra/L.ra-1);
+    if(L.rb) c+=30*Math.max(0,rb/L.rb-1);
+    return c;
+  };
+  function load(spb,spr){
+    Xa=Ya=Xb=Yb=0;
+    for(let p=0;p<N;p++){ pb[p]=spb[p]; pr[p]=spr[p]; wa[p]=A[pb[p]]; wb[p]=B[pr[p]]; Xa+=wa[p]*COS[p]; Ya+=wa[p]*SIN[p]; Xb+=wb[p]*COS[p]; Yb+=wb[p]*SIN[p]; }
+    return costOf(Xa,Ya,Xb,Yb);
+  }
+  function init(){
+    const a=[...Array(N).keys()], b=[...Array(N).keys()];
+    for(let i=N-1;i>0;i--){ let j=(Math.random()*(i+1))|0; [a[i],a[j]]=[a[j],a[i]]; j=(Math.random()*(i+1))|0; [b[i],b[j]]=[b[j],b[i]]; }
+    return load(a,b);
+  }
+  function trial(i,j,k){
+    let nbi=pb[i], nbj=pb[j], nri=pr[i], nrj=pr[j];
+    if(k===0){[nbi,nbj]=[nbj,nbi];} else if(k===1){[nri,nrj]=[nrj,nri];} else {[nbi,nbj]=[nbj,nbi];[nri,nrj]=[nrj,nri];}
+    const oai=wa[i],oaj=wa[j],obi=wb[i],obj=wb[j];
+    const nai=A[nbi],naj=A[nbj],nbi_=B[nri],nbj_=B[nrj];
+    const xa=Xa+(nai-oai)*COS[i]+(naj-oaj)*COS[j], ya=Ya+(nai-oai)*SIN[i]+(naj-oaj)*SIN[j];
+    const xb=Xb+(nbi_-obi)*COS[i]+(nbj_-obj)*COS[j], yb=Yb+(nbi_-obi)*SIN[i]+(nbj_-obj)*SIN[j];
+    wa[i]=nai;wa[j]=naj;wb[i]=nbi_;wb[j]=nbj_;
+    const c=costOf(xa,ya,xb,yb);
+    mv={i,j,nbi,nbj,nri,nrj,xa,ya,xb,yb,oai,oaj,obi,obj};
+    return c;
+  }
+  function propose(){
+    const m=Math.random(); let i=(Math.random()*N)|0, j=(Math.random()*(N-1))|0; if(j>=i) j++;
+    return trial(i,j, m<0.34?0:m<0.68?1:2);
+  }
+  function accept(){ const m=mv; pb[m.i]=m.nbi; pb[m.j]=m.nbj; pr[m.i]=m.nri; pr[m.j]=m.nrj; Xa=m.xa;Ya=m.ya;Xb=m.xb;Yb=m.yb; }
+  function undo(){ const m=mv; wa[m.i]=m.oai;wa[m.j]=m.oaj;wb[m.i]=m.obi;wb[m.j]=m.obj; }
+  function snapshot(){ return {pb:Array.from(pb), pr:Array.from(pr)}; }
+  function polish(){
+    let cur=costOf(Xa,Ya,Xb,Yb), improved=true, guard=0;
+    while(improved && guard++<50){
+      improved=false;
+      for(let i=0;i<N;i++) for(let j=i+1;j<N;j++) for(let k=0;k<3;k++){
+        const c=trial(i,j,k);
+        if(c<cur-1e-12){ accept(); cur=c; improved=true; } else undo();
+      }
+    }
+    return cur;
+  }
+  return {init,load,propose,accept,undo,snapshot,polish};
+}
+
+function violation(d){ return checkLimits(d).reduce((t,c)=>t+Math.max(0,c.val/c.lim-1),0); }
+function runJobs(jobs, onIter){
+  return new Promise(resolve=>{
+    const results=[]; let ji=0, it=0, S=null, cur=0;
+    function slice(){
+      const j=jobs[ji];
+      if(!S){ S=makeSolver(j.cfg); cur=j.start?S.load(j.start.pb,j.start.pr):S.init(); it=0; }
+      const end=Math.min(it+40000,j.iters), from=it;
+      for(;it<end;it++){
+        const T=j.lin?(j.T0*(1-it/j.iters)+0.0005):(j.T0*Math.pow(j.T1/j.T0, it/j.iters)), c=S.propose();
+        if(c<cur || Math.random()<Math.exp((cur-c)/T)){ S.accept(); cur=c; } else S.undo();
+      }
+      onIter(it-from);
+      if(it>=j.iters){ S.polish(); results.push(S.snapshot()); ji++; S=null; if(ji>=jobs.length){ resolve(results); return; } }
+      setTimeout(slice,0);
+    }
+    slice();
+  });
+}
+async function optimize(lambda, effort, sep, onProgress){
+  const sc=Math.max(1,N/20), none={rt:null,md:null,ra:null,rb:null}, anyLim=Object.values(LIM).some(v=>v);
+  const base={lam:lambda,target:0,mu:sep?1:0,lim:none};
+  const it1=Math.round(60000*effort*sc), it2=Math.round(150000*effort*sc), it3=Math.round(150000*effort*sc);
+  const ROUNDS=6, total=6*it1+it2+(anyLim?ROUNDS*4*it3:0); let done=0;
+  const tick=n=>{ done+=n; onProgress(Math.min(1,done/total)); };
+  const baseCost=snap=>makeSolver(base).load(snap.pb,snap.pr);
+  // stage 1: unconstrained quality search
+  const r1=await runJobs(Array.from({length:6},()=>({cfg:base,iters:it1,T0:3,T1:0.0004,start:null})),tick);
+  let best=r1.reduce((a,b)=>baseCost(b)<baseCost(a)?b:a);
+  // stage 2: refine without letting pair difference grow
+  const md=build(best.pb,best.pr).maxD;
+  const r2=await runJobs([{cfg:{lam:10,target:md+1e-6,mu:base.mu,lim:none},iters:it2,T0:0.15,T1:0.0003,start:best}],tick);
+  if(baseCost(r2[0])<=baseCost(best)) best=r2[0];
+  const cands=[best];
+  // stage 3: when thresholds are violated, run hot restarts with several weightings and keep any layout that meets all limits
+  if(anyLim && violation(build(best.pb,best.pr))>1e-9){
+    const mu3=(LIM.ra||LIM.rb)?1:base.mu, lams=LIM.md?[2,2,3,1.5]:[lambda,lambda,lambda,lambda];
+    for(let round=0; round<ROUNDS; round++){
+      const r3=await runJobs(lams.map(l=>({cfg:{lam:l,target:0,mu:mu3,lim:none},iters:it3,T0:12,T1:0,lin:true,start:null})),tick);
+      cands.push(...r3);
+      if(cands.some(c=>violation(build(c.pb,c.pr))<=1e-9)) break;
+    }
+    onProgress(1);
+  }
+  cands.sort((x,y)=>{
+    const vx=violation(build(x.pb,x.pr)), vy=violation(build(y.pb,y.pr));
+    if(vx<=1e-9 && vy<=1e-9) return baseCost(x)-baseCost(y);
+    return vx-vy;
+  });
+  return {best:cands[0]};
+}
+
+/* ---------- state & rendering ---------- */
+let OPT=null, BEFORE=null, mode="opt", sel=1, ISO=null;
+const cur = () => mode==="opt" ? OPT : BEFORE;
+function ramp(t){ const c0=[214,228,238], c1=[35,89,127]; return c0.map((v,i)=>Math.round(v+(c1[i]-v)*t)); }
+
+function drawWheel(){
+  const svg=$("wheel"); svg.innerHTML="";
+  const d=cur(), R=Math.max(388,N*21.5), NW=104, NH=74, M=R+120, cx=M, cy=M, S=2*M;
+  svg.setAttribute("viewBox",`0 0 ${S} ${S}`);
+  $("wheel").style.minWidth = Math.max(660, N*33)+"px";
+  const ang=(q)=>(q-1)*2*Math.PI/N;
+  const pt=(q,r)=>{const a=ang(q); return [cx+r*Math.sin(a), cy-r*Math.cos(a)];};
+  el("circle",{cx,cy,r:R,fill:"none",stroke:"#D5DEE5","stroke-width":1.5},svg);
+  const o=d.rows[sel-1].opp, h=N/2;
+  for(let q=1;q<=h;q++){ const [x1,y1]=pt(q,R),[x2,y2]=pt(q+h,R); el("line",{x1,y1,x2,y2,class:"diam"+((q===sel||q+h===sel)?" sel":"")},svg); }
+  const r0=d.rows[sel-1], r1=d.rows[o-1], hub=Math.min(196,R-170);
+  el("circle",{cx,cy,r:hub,fill:"#F9FBFC",stroke:"#C3CFD8","stroke-width":1.5},svg);
+  const T=(y,size,weight,fill,txt)=>{const t=el("text",{x:cx,y,"text-anchor":"middle","font-size":size,"font-weight":weight,fill},svg); t.textContent=txt;};
+  T(cy-hub*0.5,22,400,"#5B6E7E","برآیند نابالانسی");
+  T(cy-hub*0.12,hub*0.43,800,"#12263A",d.res<10?fmt(d.res,3):fmt(d.res,1));
+  T(cy+hub*0.08,22,400,"#5B6E7E","گرم");
+  el("line",{x1:cx-hub*0.56,x2:cx+hub*0.56,y1:cy+hub*0.21,y2:cy+hub*0.21,stroke:"#C3CFD8"},svg);
+  T(cy+hub*0.41,20,400,"#5B6E7E",`جایگاه ${r0.q} در برابر ${r1.q}`);
+  T(cy+hub*0.6,30,800,Math.round(r0.diff)>0?"#B07D1F":Math.round(r0.diff)<0?"#4F86AB":"#12263A",`اختلاف ${sgn(r0.diff)} گرم`);
+  d.rows.forEach(r=>{
+    const [x,y]=pt(r.q,R), [lx,ly]=pt(r.q,R+84);
+    const t=(r.total-d.min)/((d.max-d.min)||1), col=ramp(t), fill=`rgb(${col})`, dark=t>0.33;
+    const c1=dark?"#fff":"#12263A", c2=dark?"#DCE9F2":"#3A5266";
+    const g=el("g",{class:"node"+(r.q===sel?" sel":"")+(r.q===o?" opp":""),tabindex:0,role:"button","aria-label":`جایگاه ${r.q}: ضد تیغ ${r.blade} وزن ${fmt(r.wb)}، روبند ${r.rub} وزن ${fmt(r.wr)}، مجموع ${fmt(r.total)}`},svg);
+    el("rect",{x:x-NW/2,y:y-NH/2,width:NW,height:NH,rx:14,fill,class:"body"},g);
+    const tx=(xx,yy,anchor,size,weight,color,txt)=>{const e=el("text",{x:xx,y:yy,"text-anchor":anchor,"font-size":size,"font-weight":weight,fill:color},g); e.textContent=txt;};
+    tx(x-45,y-15,"start",19,800,c1,r.blade); tx(x+46,y-15,"end",19,400,c1,fmt(r.wb));
+    tx(x-45,y+6,"start",19,800,c2,r.rub);   tx(x+46,y+6,"end",19,400,c2,fmt(r.wr));
+    el("line",{x1:x-46,x2:x+46,y1:y+13,y2:y+13,stroke:dark?"#9FC0D8":"#7C95A8","stroke-width":1.2},g);
+    tx(x,y+32,"middle",23,800,c1,fmt(r.total));
+    const mark=(r.q===sel||r.q===o);
+    el("circle",{cx:lx,cy:ly,r:20,fill:mark?"#B07D1F":"#fff",stroke:mark?"#B07D1F":"#C3CFD8"},svg);
+    const p=el("text",{x:lx,y:ly+7,"text-anchor":"middle",class:"poslbl"+(mark?" sel":"")},svg); p.textContent=r.q;
+    const go=()=>select(r.q);
+    g.addEventListener("click",go);
+    g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});
+  });
+}
+
+function drawVector(){
+  const svg=$("vec"); svg.innerHTML="";
+  const cx=150, cy=150, Rm=118, nice=Math.max(1,Math.ceil(Math.max(BEFORE.res,1)/50)*50);
+  [1/3,2/3,1].forEach(f=>{
+    el("circle",{cx,cy,r:Rm*f,fill:"none",stroke:"#D5DEE5","stroke-width":1},svg);
+    const tx=el("text",{x:cx+4,y:cy-Rm*f+12,"font-size":10,fill:"#8A9BA8"},svg); tx.textContent=Math.round(nice*f);
+  });
+  el("line",{x1:cx,y1:cy-Rm-8,x2:cx,y2:cy+Rm+8,stroke:"#D5DEE5"},svg);
+  el("line",{x1:cx-Rm-8,y1:cy,x2:cx+Rm+8,y2:cy,stroke:"#D5DEE5"},svg);
+  const l1=el("text",{x:cx,y:12,"text-anchor":"middle","font-size":11,fill:"#5B6E7E"},svg); l1.textContent="جایگاه ۱";
+  const arrow=(d,color,w,dash)=>{
+    const len=Math.min(d.res/nice,1)*Rm, a=d.phi*Math.PI/180, x=cx+len*Math.sin(a), y=cy-len*Math.cos(a);
+    if(len>3) el("line",{x1:cx,y1:cy,x2:x,y2:y,stroke:color,"stroke-width":w,"stroke-linecap":"round","stroke-dasharray":dash||"none"},svg);
+    el("circle",{cx:x,cy:y,r:5.5,fill:color},svg);
+  };
+  arrow(BEFORE,"#8FB1CB",3,"6 5"); arrow(cur(),"#B07D1F",3.5);
+  el("circle",{cx,cy,r:3,fill:"#12263A"},svg);
+  const lg=el("text",{x:150,y:294,"text-anchor":"middle","font-size":11,fill:"#5B6E7E"},svg); lg.textContent="مقیاس: گرم";
+  const d=cur();
+  $("vecRows").innerHTML=
+   `<div class="vrow"><span class="k">مؤلفه X</span><b><span class="num">${fmt(d.X,2)}</span> g</b></div>
+    <div class="vrow"><span class="k">مؤلفه Y</span><b><span class="num">${fmt(d.Y,2)}</span> g</b></div>
+    <div class="vrow"><span class="k">برآیند</span><b><span class="num">${fmt(d.res,3)}</span> g</b></div>
+    <div class="vrow"><span class="k">جهت سنگینی از جایگاه ۱</span><b><span class="num">${fmt(d.phi,1)}</span>°</b></div>
+    <div class="vrow"><span class="k"><span style="color:#8FB1CB">●</span> قبل از بهینه‌سازی &nbsp; <span style="color:#B07D1F">●</span> چیدمان انتخاب‌شده</span></div>`;
+}
+
+function drawStats(){
+  const d=cur(), umm=d.res*RADIUS;
+  const chk=Object.fromEntries(checkLimits(d).map(c=>[c.k,c]));
+  const badge=k=>chk[k]?`<span style="display:block;font-size:12px;margin-top:2px">${chk[k].ok?"✓ زیر حد":"✗ بیشتر از حد"} (حد <span class="num">${chk[k].lim}</span> g)</span>`:"";
+  const cls=k=>chk[k]?(chk[k].ok?" ok":" bad"):"";
+  let extra="";
+  if(ISO){ const allow=9549*ISO.G*ISO.m/ISO.n, ratio=umm/allow*100;
+    extra+=`<div class="stat ${ratio<=100?"ok":"bad"}" style="grid-column:1/-1"><span>مقایسه با ISO 1940 (G${ISO.G}): مجاز ${fmt(allow,0)} g·mm</span><b><span class="num">${fmt(ratio,ratio<10?2:1)}</span>٪ از حد مجاز ${ratio<=100?"(قابل‌قبول)":"(بیشتر از حد مجاز)"}</b></div>`; }
+  if(GEO.d>0&&GEO.L>0){ const eq=d.resA*RADIUS*GEO.d/GEO.L;
+    extra+=`<div class="stat" style="grid-column:1/-1"><span>نابالانسی معادل کوپل ضد تیغ و روبند، در هر صفحه اصلاحی (تخمینی)</span><b><span class="num">${fmt(eq,eq<100?1:0)}</span><span class="unit">g·mm</span></b></div>`; }
+  $("stats").innerHTML=
+   `<div class="stat key"><span>برآیند نابالانسی مجموع${chk.rt?(chk.rt.ok?" ✓ زیر حد":" ✗ بیشتر از حد")+` (حد ${chk.rt.lim} g)`:""}</span><b><span class="num">${d.res<10?fmt(d.res,3):fmt(d.res,1)}</span><span class="unit">گرم</span></b></div>
+    <div class="stat"><span>قبل از بهینه‌سازی</span><b><span class="num">${fmt(BEFORE.res,1)}</span><span class="unit">g</span></b></div>
+    <div class="stat"><span>در شعاع <span class="num">${RADIUS}</span> mm</span><b><span class="num">${fmt(umm,umm<100?1:0)}</span><span class="unit">g·mm</span></b></div>
+    <div class="stat${cls("md")}"><span>بیشترین اختلاف دو جایگاه روبه‌رو</span><b><span class="num">${Math.round(d.maxD)}</span><span class="unit">g</span></b>${badge("md")}</div>
+    <div class="stat"><span>بازه وزن مجموع هر جایگاه</span><b style="font-size:15px;line-height:1.5"><span class="num">${fmt(d.min,3)} – ${fmt(d.max,3)}</span> kg</b></div>
+    <div class="stat${cls("ra")}"><span>برآیند ضد تیغ‌ها به‌تنهایی</span><b><span class="num">${d.resA<10?fmt(d.resA,2):fmt(d.resA,1)}</span><span class="unit">g</span></b>${badge("ra")}</div>
+    <div class="stat${cls("rb")}"><span>برآیند روبندها به‌تنهایی</span><b><span class="num">${d.resB<10?fmt(d.resB,2):fmt(d.resB,1)}</span><span class="unit">g</span></b>${badge("rb")}</div>${extra}`;
+}
+
+function drawDetail(){
+  const d=cur(), r=d.rows[sel-1], o=d.rows[r.opp-1];
+  const side=(x,title)=>`<div class="side"><h3>${title}</h3>
+    <div class="ln"><span>ضد تیغ شماره <span class="num">${x.blade}</span></span><b><span class="num">${fmt(x.wb)}</span> kg</b></div>
+    <div class="ln"><span>روبند شماره <span class="num">${x.rub}</span></span><b><span class="num">${fmt(x.wr)}</span> kg</b></div>
+    <div class="ln t"><span>مجموع</span><b><span class="num">${fmt(x.total)}</span> kg</b></div></div>`;
+  const rd=Math.round(r.diff);
+  const heavier= rd>0?`جایگاه ${r.q} سنگین‌تر است`: rd<0?`جایگاه ${r.opp} سنگین‌تر است`:"هر دو برابرند";
+  $("detail").innerHTML=`<div class="pair">${side(r,"جایگاه "+r.q)}${side(o,"جایگاه "+r.opp+" (روبه‌رو)")}</div>
+   <div class="diffbox">اختلاف این دو جایگاه: <b><span class="num">${sgn(r.diff)}</span> گرم</b> و ${heavier}.</div>`;
+}
+
+function drawTable(){
+  const d=cur(), maxAbs=Math.max(d.maxD,1), o=d.rows[sel-1].opp, h=N/2;
+  let s=`<thead><tr><th>جایگاه</th><th>ضد تیغ</th><th>روبند</th><th>مجموع</th><th>روبه‌رو</th><th>اختلاف (g)</th></tr></thead><tbody>`;
+  d.rows.forEach((r,i)=>{
+    const w=Math.abs(r.diff)/maxAbs*50, rd=Math.round(r.diff);
+    const bar=r.diff>=0?`<i style="left:50%;width:${w}%;background:var(--brass)"></i>`:`<i style="right:50%;width:${w}%;background:var(--light)"></i>`;
+    s+=`<tr class="row${r.q===sel?" sel":""}${r.q===o?" opp":""}${i===h?" gap":""}" data-q="${r.q}">
+      <td><span class="big num">${r.q}</span></td>
+      <td><span class="big num">${r.blade}</span><small class="num">${fmt(r.wb)}</small></td>
+      <td><span class="big num">${r.rub}</span><small class="num">${fmt(r.wr)}</small></td>
+      <td><b class="num">${fmt(r.total)}</b><small>kg</small></td>
+      <td><span class="num">${r.opp}</span></td>
+      <td><b class="num ${rd>0?"pos":rd<0?"neg":""}">${sgn(r.diff)}</b><div class="bar">${bar}</div></td></tr>`;
+  });
+  $("tbl").innerHTML=s+"</tbody>";
+  $("tbl").querySelectorAll("tr.row").forEach(tr=>tr.addEventListener("click",()=>select(+tr.dataset.q)));
+}
+function select(q){ sel=q; drawWheel(); drawDetail(); drawTable(); }
+function renderAll(){ drawStats(); drawWheel(); drawVector(); drawDetail(); drawTable(); }
+function setMode(m){ mode=m; $("bOpt").setAttribute("aria-pressed",m==="opt"); $("bRaw").setAttribute("aria-pressed",m==="raw"); renderAll(); }
+$("bOpt").addEventListener("click",()=>setMode("opt")); $("bRaw").addEventListener("click",()=>setMode("raw"));
+
+/* ---------- export ---------- */
+function tableRows(){
+  const d=cur();
+  const head=["جایگاه","ضد تیغ","وزن ضد تیغ (kg)","روبند","وزن روبند (kg)","مجموع (kg)","روبه‌رو","اختلاف (g)"];
+  return [head, ...d.rows.map(r=>[r.q,r.blade,fmt(r.wb),r.rub,fmt(r.wr),fmt(r.total),r.opp,Math.round(r.diff)])];
+}
+$("copy").addEventListener("click",async()=>{
+  const txt=tableRows().map(r=>r.join("\t")).join("\n");
+  try{ await navigator.clipboard.writeText(txt); $("copyMsg").textContent="جدول کپی شد. در اکسل بچسبانید."; }
+  catch(e){ const ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta); ta.select();
+    let ok=false; try{ ok=document.execCommand("copy"); }catch(_){}
+    document.body.removeChild(ta); $("copyMsg").textContent= ok?"جدول کپی شد. در اکسل بچسبانید.":"کپی ممکن نشد. از دانلود CSV استفاده کنید."; }
+});
+$("csv").addEventListener("click",()=>{
+  const txt="\uFEFF"+tableRows().map(r=>r.join(",")).join("\n");
+  const url=URL.createObjectURL(new Blob([txt],{type:"text/csv;charset=utf-8"}));
+  const a=document.createElement("a"); a.href=url; a.download="impeller_layout.csv"; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+  $("copyMsg").textContent="اگر دانلود شروع نشد، از دکمه کپی استفاده کنید.";
+});
+
+/* ---------- run ---------- */
+function setStatus(msg,err){ const s=$("status"); s.textContent=msg; s.className=err?"err":""; }
+function limVal(id){ const v=parseFloat($(id).value); return v>0?v:null; }
+function setBanner(kind,text){ const b=$("banner"); b.className=kind||""; b.textContent=text||""; }
+function prepare(){
+  const a=parseList($("taA").value), b=parseList($("taB").value);
+  if(a.some(x=>!isFinite(x)||x<=0)||b.some(x=>!isFinite(x)||x<=0)) return "در لیست وزن‌ها مقدار نامعتبر هست. فقط عدد مثبت وارد کنید.";
+  if(a.length!==b.length) return `تعداد ضد تیغ‌ها (${a.length}) و روبندها (${b.length}) برابر نیست.`;
+  if(a.length<4||a.length%2||a.length>60) return "تعداد باید زوج و بین ۴ تا ۶۰ باشد.";
+  const dia=parseFloat($("dia").value); if(!(dia>0)) return "قطر را وارد کنید.";
+  A=a; B=b; RADIUS=Math.round(dia/2*10)/10; setGeometry(a.length);
+  LIM={rt:limVal("limRt"),md:limVal("limMd"),ra:limVal("limRa"),rb:limVal("limRb")};
+  GEO={d:limVal("dz"),L:limVal("wid")};
+  const m=parseFloat($("mass").value), n=parseFloat($("rpm").value);
+  ISO=(m>0&&n>0)?{m,n,G:parseFloat($("grade").value)}:null;
+  const ident=[...Array(N).keys()]; BEFORE=build(ident,ident);
+  return null;
+}
+function showResult(){
+  $("results").style.display="block"; sel=1; mode="opt";
+  $("bOpt").setAttribute("aria-pressed","true"); $("bRaw").setAttribute("aria-pressed","false");
+  renderAll();
+  const w=$("wscroll"); w.scrollLeft=(w.scrollWidth-w.clientWidth)/2; $("scrollHint").style.display=(w.scrollWidth<=w.clientWidth+2)?"none":"block";
+}
+function limitBanner(kept){
+  const anyLim=Object.values(LIM).some(v=>v);
+  if(!anyLim) return setBanner("","");
+  if(kept) return setBanner("info","چیدمان فعلی شما (ضد تیغ و روبند شماره i در جایگاه i) همه حدهای واردشده را دارد، پس تغییری داده نشد.");
+  const bad=checkLimits(OPT).filter(c=>!c.ok);
+  if(bad.length) setBanner("warn","با این وزن‌ها رسیدن به همه حدها ممکن نشد. بهترین نتیجه نمایش داده شده. حد برقرارنشده: "+bad.map(c=>`${c.label} (${fmt(c.val,2)} g از حد ${c.lim} g)`).join("، ")+". حد را کمی بازتر کنید یا دقت جست‌وجو را روی «دقیق» بگذارید.");
+  else setBanner("ok","همه حدهای واردشده در چیدمان نهایی برقرار است.");
+}
+let KEPT=false;
+async function run(){
+  const err=prepare(); if(err) return setStatus(err,true);
+  const anyLim=Object.values(LIM).some(v=>v);
+  if(anyLim && $("keepIf").checked && checkLimits(BEFORE).every(c=>c.ok)){
+    OPT=BEFORE; KEPT=true; showResult(); limitBanner(true); autosave();
+    return setStatus("بدون تغییر: وزن‌های شما همین‌طور در حدهای مجاز هستند.");
+  }
+  KEPT=false;
+  $("run").disabled=true; setStatus("در حال بهینه‌سازی…"); $("prog").style.display="block"; $("prog").firstElementChild.style.width="0";
+  const t0=performance.now();
+  const {best}=await optimize(parseFloat($("prio").value), parseFloat($("effort").value), $("sep").checked, p=>{ $("prog").firstElementChild.style.width=Math.round(p*100)+"%"; });
+  OPT=build(best.pb,best.pr); showResult(); limitBanner(false);
+  $("prog").style.display="none"; $("run").disabled=false; autosave();
+  setStatus(`انجام شد در ${((performance.now()-t0)/1000).toFixed(1)} ثانیه. برآیند ${fmt(OPT.res,3)} گرم و بیشترین اختلاف جفت‌ها ${Math.round(OPT.maxD)} گرم.`);
+}
+
+/* ---------- save / restore ---------- */
+const LS_LAST="imp_opt_last_v1", LS_LIST="imp_opt_saved_v1";
+const lsGet=(k,d)=>{ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } };
+const lsSet=(k,v)=>{ try{ localStorage.setItem(k,JSON.stringify(v)); return true; }catch(e){ return false; } };
+const IDS=["taA","taB","dia","prio","effort","limRt","limMd","limRa","limRb","dz","wid","mass","rpm","grade"];
+function collectState(name){
+  const st={v:1, name:name||"", ts:Date.now(), keepIf:$("keepIf").checked, sep:$("sep").checked, kept:KEPT};
+  IDS.forEach(id=>st[id]=$(id).value);
+  if(OPT){ st.pb=OPT.rows.map(r=>r.blade-1); st.pr=OPT.rows.map(r=>r.rub-1); st.res=OPT.res; st.maxD=OPT.maxD; }
+  return st;
+}
+function validPerm(p,n){ return Array.isArray(p)&&p.length===n&&new Set(p).size===n&&p.every(x=>Number.isInteger(x)&&x>=0&&x<n); }
+function applyState(st){
+  if(!st||typeof st!=="object") return false;
+  IDS.forEach(id=>{ if(st[id]!==undefined&&st[id]!==null) $(id).value=st[id]; });
+  $("keepIf").checked=st.keepIf!==false; $("sep").checked=st.sep!==false; updCounts();
+  const err=prepare(); if(err){ setStatus(err,true); return false; }
+  if(validPerm(st.pb,N)&&validPerm(st.pr,N)){ OPT=build(st.pb,st.pr); KEPT=!!st.kept; showResult(); limitBanner(KEPT); setStatus("نتیجه ذخیره‌شده بازیابی شد."); return true; }
+  return false;
+}
+function autosave(){ lsSet(LS_LAST,collectState("")); }
+function fmtDate(ts){ try{ return new Date(ts).toLocaleString("fa-IR",{dateStyle:"short",timeStyle:"short"}); }catch(e){ return new Date(ts).toLocaleString(); } }
+function renderSaved(){
+  const list=lsGet(LS_LIST,[]), box=$("savedList");
+  if(!list.length){ box.innerHTML='<p class="sub" style="margin:8px 0 0">هنوز نتیجه‌ای ذخیره نشده است.</p>'; return; }
+  box.innerHTML=list.map((it,i)=>`<div class="item"><span class="nm">${(it.name||"بدون نام").replace(/</g,"&lt;")}</span>
+    <span class="meta">${fmtDate(it.ts)} · برآیند <span class="num">${fmt(it.res??0,3)}</span> g · اختلاف <span class="num">${Math.round(it.maxD??0)}</span> g</span>
+    <button data-load="${i}">بارگذاری</button><button class="del" data-del="${i}">حذف</button></div>`).join("");
+}
+$("savedList").addEventListener("click",e=>{
+  const l=e.target.dataset.load, d=e.target.dataset.del, list=lsGet(LS_LIST,[]);
+  if(l!==undefined){ if(applyState(list[+l])) { autosave(); $("saveMsg").textContent="بارگذاری شد."; window.scrollTo({top:$("results").offsetTop-10,behavior:"smooth"}); } }
+  if(d!==undefined){ list.splice(+d,1); lsSet(LS_LIST,list); renderSaved(); }
+});
+$("saveBtn").addEventListener("click",()=>{
+  if(!OPT){ $("saveMsg").textContent="ابتدا بهینه‌سازی را اجرا کنید."; return; }
+  const name=$("saveName").value.trim()||("نتیجه "+fmtDate(Date.now()));
+  const list=lsGet(LS_LIST,[]); list.unshift(collectState(name)); if(list.length>30) list.length=30;
+  if(lsSet(LS_LIST,list)){ $("saveMsg").textContent="ذخیره شد."; $("saveName").value=""; renderSaved(); }
+  else $("saveMsg").textContent="ذخیره در مرورگر ممکن نشد (احتمالاً حالت خصوصی یا محدودیت مرورگر). از «ذخیره در فایل» استفاده کنید.";
+});
+$("expJson").addEventListener("click",()=>{
+  if(!OPT){ $("saveMsg").textContent="ابتدا بهینه‌سازی را اجرا کنید."; return; }
+  const st=collectState($("saveName").value.trim()||"impeller");
+  const url=URL.createObjectURL(new Blob([JSON.stringify(st,null,1)],{type:"application/json"}));
+  const a=document.createElement("a"); a.href=url; a.download="impeller_state.json"; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+  $("saveMsg").textContent="اگر دانلود شروع نشد، همین نتیجه را با «ذخیره نتیجه» در مرورگر نگه دارید.";
+});
+$("impJson").addEventListener("change",e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{ try{ if(applyState(JSON.parse(r.result))){ autosave(); $("saveMsg").textContent="فایل بارگذاری شد."; } else $("saveMsg").textContent="فایل معتبر نبود."; }
+    catch(_){ $("saveMsg").textContent="فایل معتبر نبود."; } e.target.value=""; };
+  r.readAsText(f);
+});
+$("printBtn").addEventListener("click",()=>{ if(!OPT){ $("saveMsg").textContent="ابتدا بهینه‌سازی را اجرا کنید."; return; } window.print(); });
+renderSaved();
+$("run").addEventListener("click",run);
+(function init(){ const last=lsGet(LS_LAST,null); if(!(last&&applyState(last))) run(); })();
+</script>
+</body>
+</html>
